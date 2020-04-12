@@ -20,43 +20,76 @@ namespace ConsoleApp1
 
         
 
-        public static int minMoves(List<List<int>> maze, int x, int y)
+         public static int minMoves(List<List<int>> maze, int x, int y)
         {
-            int count = 0;
-            
-            if (maze[0][1]==1 && maze[1][0]==1)
+            int count = -1;
+            int gold = 0;
+            int tempRow = 0;
+            int tempCol = 0;
+            int leftCount = 0;
+            int RightCount = 0;
+            int totalPath = (x + 1) * maze[0].Count;
+            if (maze[0][1] == 1 && maze[1][0] == 1)
             {
                 return -1;
             }
-            
+
             for (int row = 0; row < maze.Count; row++)
             {
                 for (int col = 0; col < maze[0].Count; col++)
                 {
-                    if (col == y)
+                    count = count + 1;
+                    
+                    if (totalPath <= 0)
                     {
-                        if (row + 1 == x)
+                        if ((tempCol == y && tempRow + 1 == x) || (tempRow == x && tempCol + 1 == y))
                         {
-                            count++;
-                            return count;
+                            gold++;
+                            return gold;
                         }
-                        else if (maze[row + 1][col] != 1)
+                        return count;
+                    }
+                    if(row==x)
+                    {
+                        for (int i = 0; i < x; i++)
                         {
-                            count++;
-                                break;
+                            leftCount++;
+                            if (maze[row][i] == 2)
+                            {
+                                count = count + leftCount;
+                                tempRow = row;
+                                tempCol = i;
+                                gold = count;
+                            }
+                            totalPath--;
                         }
-                        else
+                        for (int i = maze[row].Count-1; i > x; i--)
                         {
-                            count++;
+                            RightCount++;
+                            if (maze[row][i] == 2)
+                            {
+                                count = count + RightCount;
+                                tempRow = row;
+                                tempCol = i;
+                                gold = count;
+                            }
+                            totalPath--;
                         }
                     }
-                    else
+                    if (maze[row][col] == 2)
                     {
-                        count++;
+                        tempRow = row;
+                        tempCol = col;
+                        gold = count;
                     }
+                    if (maze[row][col] == 1)
+                    {
+                        count = count - 1;
+                    }
+                    totalPath--;
                 }
             }
-            
+
             return count;
         }
     }
