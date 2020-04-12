@@ -18,9 +18,7 @@ namespace ConsoleApp1
          *  3. INTEGER y
          */
 
-        
-
-         public static int minMoves(List<List<int>> maze, int x, int y)
+        public static int minMoves(List<List<int>> maze, int x, int y)
         {
             int count = -1;
             int gold = 0;
@@ -36,10 +34,10 @@ namespace ConsoleApp1
 
             for (int row = 0; row < maze.Count; row++)
             {
+                int loop = 0;
                 for (int col = 0; col < maze[0].Count; col++)
                 {
-                    count = count + 1;
-                    
+                    count += 1;
                     if (totalPath <= 0)
                     {
                         if ((tempCol == y && tempRow + 1 == x) || (tempRow == x && tempCol + 1 == y))
@@ -49,30 +47,56 @@ namespace ConsoleApp1
                         }
                         return count;
                     }
-                    if(row==x)
+                    if (row == x)
                     {
-                        for (int i = 0; i < x; i++)
+                        int found = 0;
+                        for (int i = 0; i < x - 1; i++)
                         {
-                            leftCount++;
-                            if (maze[row][i] == 2)
+                            if (i == y) 
                             {
+                                if (found > 0)
+                                {
+                                    return count + RightCount;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else if (maze[row][i] == 1)
+                            {
+                                count = count - 1;
+                                break;
+                            }
+                            else if (maze[row][i] == 2)
+                            {
+                                found++;
                                 count = count + leftCount;
                                 tempRow = row;
                                 tempCol = i;
                                 gold = count;
                             }
+                            leftCount++;
                             totalPath--;
                         }
-                        for (int i = maze[row].Count-1; i > x; i--)
+                        for (int i = maze[row].Count; i >= x; i--)
                         {
-                            RightCount++;
-                            if (maze[row][i] == 2)
+                            if ((i - 1) == y)
                             {
-                                count = count + RightCount;
+                                RightCount++;
+                                return count + RightCount;
+                            }
+                            else if (maze[row][i - 1] == 1)
+                            {
+                                break;
+                            }
+                            else if (maze[row][i - 1] == 2)
+                            {
                                 tempRow = row;
                                 tempCol = i;
-                                gold = count;
+                                gold = count + RightCount;
                             }
+                            RightCount++;
                             totalPath--;
                         }
                     }
@@ -81,10 +105,15 @@ namespace ConsoleApp1
                         tempRow = row;
                         tempCol = col;
                         gold = count;
+                        loop++;
                     }
                     if (maze[row][col] == 1)
                     {
                         count = count - 1;
+                    }
+                    if(loop==0 && col==maze[0].Count-1)
+                    {
+                        count = count - maze[0].Count - 1;
                     }
                     totalPath--;
                 }
@@ -99,7 +128,7 @@ namespace ConsoleApp1
     {
         public static void Main(string[] args)
         {
-           // TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+            // TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
 
             int mazeRows = Convert.ToInt32(Console.ReadLine().Trim());
             int mazeColumns = Convert.ToInt32(Console.ReadLine().Trim());
